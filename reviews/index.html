@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="pingback" href="../xmlrpc.php" />
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 
     <script type="text/javascript">
       document.documentElement.className = "js";
@@ -6069,15 +6071,58 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
                            </div>
                         </div>
                       </div>
+
+<div class="review-form">
+    <h2>Leave a Review</h2>
+    <form id="reviewForm">
+        <label>
+            Name: <input type="text" id="name" placeholder="Your Name">
+            <input type="checkbox" id="anonymous"> Post as Anonymous
+        </label>
+        <label>
+            Province: <input type="text" id="province" required>
+        </label>
+        <label>
+            Date: <input type="date" id="date" required>
+        </label>
+        <label>
+            Stars:
+            <select id="stars" required>
+                <option value="">Select</option>
+                <option value="1">★☆☆☆☆</option>
+                <option value="2">★★☆☆☆</option>
+                <option value="3">★★★☆☆</option>
+                <option value="4">★★★★☆</option>
+                <option value="5">★★★★★</option>
+            </select>
+        </label>
+        <label>
+            Comment:
+            <textarea id="comment" required></textarea>
+        </label>
+        <button type="submit">Submit Review</button>
+    </form>
+</div>
+
+<hr>
+
+<div class="reviews-section">
+    <h2>Reviews</h2>
+    <div id="reviews"></div>
+    <div id="toast" class="toast">Thank you for your review!</div>
+
+</div>
+
+<script src="./script.js"></script>
                     </div>
-                        <div
+                    <div
                       class="et_pb_section et_pb_section_4 et_section_regular"
                     >
                       <div class="et_pb_row et_pb_row_3">
                         <div
                           class="et_pb_column et_pb_column_4_4 et_pb_column_8 et_pb_css_mix_blend_mode_passthrough et-last-child"
                         >
-                          <div
+                         <!-- <div
                             class="et_pb_button_module_wrapper et_pb_button_0_wrapper et_pb_button_alignment_center et_pb_module"
                           >
                             <a
@@ -6086,7 +6131,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
                               >CLICK HERE TO DOWNLOAD OUR 2025 PRICE
                               LIST
                             </a>
-                          </div>
+                          </div>  -->
                         </div>
                       </div>
                     </div>
