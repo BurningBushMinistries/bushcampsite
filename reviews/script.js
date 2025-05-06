@@ -1,8 +1,3 @@
-// For v9+ (modular style)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-
- // Import the functions you need
  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
  import {
    getFirestore, collection, addDoc, getDocs, updateDoc, doc, increment
@@ -66,47 +61,6 @@ function displaySampleReview() {
     `;
   reviewsDiv.appendChild(div);
 }
-
-function loadReviews() {
-  fetch("http://localhost:3000/reviews")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Server error");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      reviewsDiv.innerHTML = "";
-
-      if (data.length === 0) {
-        displaySampleReview();
-      } else {
-        data.forEach((review) => {
-          displayReview(review);
-        });
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching reviews:", error);
-      reviewsDiv.innerHTML = "";
-      displaySampleReview(); // <-- Always show sample if error
-    });
-}
-
-// function displaySampleReview() {
-//   const div = document.createElement("div");
-//   div.className = "review-card";
-//   div.innerHTML = `
-//         <strong>Anonymous</strong> (Gauteng) - 26/04/2025
-//         <div class="stars">★★★★☆</div>
-//         <p>"Amazing experience! Very satisfied with the service."</p>
-//         <div class="thumb-buttons">
-//             <button>👍 12</button>
-//             <button>👎 1</button>
-//         </div>
-//     `;
-//   reviewsDiv.appendChild(div);
-// }
 
 function displaySampleReview() {
     const div = document.createElement('div');
