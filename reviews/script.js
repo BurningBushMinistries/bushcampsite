@@ -62,20 +62,6 @@ function displaySampleReview() {
   reviewsDiv.appendChild(div);
 }
 
-function displaySampleReview() {
-    const div = document.createElement('div');
-    div.className = 'review-card';
-    div.innerHTML = `
-      <strong>Anonymous</strong> (Gauteng) - 26/04/2025
-      <div class="stars">★★★★☆</div>
-      <p>"Amazing experience! Very satisfied with the service."</p>
-      <div class="thumb-buttons">
-          <button>👍 12</button>
-          <button>👎 1</button>
-      </div>
-    `;
-    reviewsDiv.appendChild(div);
-  }
 
   function displayReview(review) {
     const div = document.createElement('div');
@@ -105,6 +91,7 @@ function displaySampleReview() {
     };
 
     try {
+      console.log("Submitting review:", review);
       await addDoc(collection(db, "reviews"), review);
       form.reset();
       loadReviews();
