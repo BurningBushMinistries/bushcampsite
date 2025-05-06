@@ -1,3 +1,24 @@
+// For v9+ (modular style)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+ // Import the functions you need
+ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+ import {
+   getFirestore, collection, addDoc, getDocs, updateDoc, doc, increment
+ } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+ // Your Firebase configuration (replace with yours)
+ const firebaseConfig = {
+    apiKey: "AIzaSyAhT_ZU5v_R8RBU3lzKtdNzfqZNtd2xODQ",
+    authDomain: "bushcampsite-review.firebaseapp.com",
+    projectId: "bushcampsite-review",
+    storageBucket: "bushcampsite-review.firebasestorage.app",
+    messagingSenderId: "784426299962",
+    appId: "1:784426299962:web:9147e0bf7c68dd302c3b03",
+    measurementId: "G-7P4NTJGXZW"
+  };
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
