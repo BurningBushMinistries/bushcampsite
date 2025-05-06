@@ -1,42 +1,40 @@
-const form = document.getElementById('reviewForm');
-const reviewsDiv = document.getElementById('reviews');
-const anonymousCheckbox = document.getElementById('anonymous');
-const nameInput = document.getElementById('name');
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-anonymousCheckbox.addEventListener('change', () => {
-    nameInput.disabled = anonymousCheckbox.checked;
+// DOM References
+const form = document.getElementById("reviewForm");
+const reviewsDiv = document.getElementById("reviews");
+const anonymousCheckbox = document.getElementById("anonymous");
+const nameInput = document.getElementById("name");
+
+anonymousCheckbox.addEventListener("change", () => {
+  nameInput.disabled = anonymousCheckbox.checked;
 });
 
-function loadReviews() {
-    fetch('http://localhost:3000/reviews')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Server error');
-            }
-            return response.json();
-        })
-        .then(data => {
-            reviewsDiv.innerHTML = '';
-
-            if (data.length === 0) {
-                displaySampleReview();
-            } else {
-                data.forEach(review => {
-                    displayReview(review);
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching reviews:', error);
-            reviewsDiv.innerHTML = ''; 
-            displaySampleReview();  // <-- Always show sample if error
-        });
+async function loadReviews() {
+  reviewsDiv.innerHTML = "";
+  try {
+    const querySnapshot = await getDocs(collection(db, "reviews"));
+    if (querySnapshot.empty) {
+      displaySampleReview();
+      return;
+    }
+    querySnapshot.forEach((docSnap) => {
+      const review = docSnap.data();
+      review.id = docSnap.id;
+      displayReview(review);
+    });
+  } catch (error) {
+    console.error("Error loading reviews:", error);
+    displaySampleReview();
+  }
 }
 
 function displaySampleReview() {
-    const div = document.createElement('div');
-    div.className = 'review-card';
-    div.innerHTML = `
+  const div = document.createElement("div");
+  div.className = "review-card";
+  div.innerHTML = `
         <strong>Anonymous</strong> (Gauteng) - 26/04/2025
         <div class="stars">★★★★☆</div>
         <p>"Amazing experience! Very satisfied with the service."</p>
@@ -45,133 +43,124 @@ function displaySampleReview() {
             <button>👎 1</button>
         </div>
     `;
-    reviewsDiv.appendChild(div);
+  reviewsDiv.appendChild(div);
 }
 
 function loadReviews() {
-    fetch('http://localhost:3000/reviews')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Server error');
-            }
-            return response.json();
-        })
-        .then(data => {
-            reviewsDiv.innerHTML = '';
+  fetch("http://localhost:3000/reviews")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Server error");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      reviewsDiv.innerHTML = "";
 
-            if (data.length === 0) {
-                displaySampleReview();
-            } else {
-                data.forEach(review => {
-                    displayReview(review);
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching reviews:', error);
-            reviewsDiv.innerHTML = ''; 
-            displaySampleReview();  // <-- Always show sample if error
+      if (data.length === 0) {
+        displaySampleReview();
+      } else {
+        data.forEach((review) => {
+          displayReview(review);
         });
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching reviews:", error);
+      reviewsDiv.innerHTML = "";
+      displaySampleReview(); // <-- Always show sample if error
+    });
 }
+
+// function displaySampleReview() {
+//   const div = document.createElement("div");
+//   div.className = "review-card";
+//   div.innerHTML = `
+//         <strong>Anonymous</strong> (Gauteng) - 26/04/2025
+//         <div class="stars">★★★★☆</div>
+//         <p>"Amazing experience! Very satisfied with the service."</p>
+//         <div class="thumb-buttons">
+//             <button>👍 12</button>
+//             <button>👎 1</button>
+//         </div>
+//     `;
+//   reviewsDiv.appendChild(div);
+// }
 
 function displaySampleReview() {
     const div = document.createElement('div');
     div.className = 'review-card';
     div.innerHTML = `
-        <strong>Anonymous</strong> (Gauteng) - 26/04/2025
-        <div class="stars">★★★★☆</div>
-        <p>"Amazing experience! Very satisfied with the service."</p>
-        <div class="thumb-buttons">
-            <button>👍 12</button>
-            <button>👎 1</button>
-        </div>
+      <strong>Anonymous</strong> (Gauteng) - 26/04/2025
+      <div class="stars">★★★★☆</div>
+      <p>"Amazing experience! Very satisfied with the service."</p>
+      <div class="thumb-buttons">
+          <button>👍 12</button>
+          <button>👎 1</button>
+      </div>
     `;
     reviewsDiv.appendChild(div);
-}
+  }
 
-function displayReview(review) {
+  function displayReview(review) {
     const div = document.createElement('div');
     div.className = 'review-card';
     div.innerHTML = `
-        <strong>${review.name || 'Anonymous'}</strong> (${review.province}) - ${new Date(review.review_date).toLocaleDateString()}
-        <div class="stars">${'★'.repeat(review.stars)}${'☆'.repeat(5 - review.stars)}</div>
-        <p>${review.comment}</p>
-        <div class="thumb-buttons">
-            <button onclick="thumb('${review.id}', 'up')">👍 ${review.thumbs_up}</button>
-            <button onclick="thumb('${review.id}', 'down')">👎 ${review.thumbs_down}</button>
-        </div>
+      <strong>${review.name || 'Anonymous'}</strong> (${review.province}) - ${new Date(review.review_date).toLocaleDateString()}
+      <div class="stars">${'★'.repeat(review.stars)}${'☆'.repeat(5 - review.stars)}</div>
+      <p>${review.comment}</p>
+      <div class="thumb-buttons">
+        <button onclick="thumb('${review.id}', 'up')">👍 ${review.thumbs_up || 0}</button>
+        <button onclick="thumb('${review.id}', 'down')">👎 ${review.thumbs_down || 0}</button>
+      </div>
     `;
     reviewsDiv.appendChild(div);
-}
+  }
 
-
-function displayReview(review) {
-    const div = document.createElement('div');
-    div.className = 'review-card';
-    div.innerHTML = `
-        <strong>${review.name || 'Anonymous'}</strong> (${review.province}) - ${new Date(review.review_date).toLocaleDateString()}
-        <div class="stars">${'★'.repeat(review.stars)}${'☆'.repeat(5 - review.stars)}</div>
-        <p>${review.comment}</p>
-        <div class="thumb-buttons">
-            <button onclick="thumb('${review.id}', 'up')">👍 ${review.thumbs_up}</button>
-            <button onclick="thumb('${review.id}', 'down')">👎 ${review.thumbs_down}</button>
-        </div>
-    `;
-    reviewsDiv.appendChild(div);
-}
-
-form.addEventListener('submit', e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
-
     const review = {
-        name: anonymousCheckbox.checked ? 'Anonymous' : nameInput.value.trim(),
-        province: document.getElementById('province').value.trim(),
-        review_date: document.getElementById('date').value,
-        stars: parseInt(document.getElementById('stars').value),
-        comment: document.getElementById('comment').value.trim()
+      name: anonymousCheckbox.checked ? 'Anonymous' : nameInput.value.trim(),
+      province: document.getElementById('province').value.trim(),
+      review_date: document.getElementById('date').value,
+      stars: parseInt(document.getElementById('stars').value),
+      comment: document.getElementById('comment').value.trim(),
+      thumbs_up: 0,
+      thumbs_down: 0
     };
 
-    fetch('http://localhost:3000/reviews', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(review)
-    })
-    .then(res => {
-        if (!res.ok) {
-            throw new Error('Failed to save review');
-        }
-        return res.json();
-    })
-    .then(() => {
-        form.reset();
-        loadReviews();
-        showToast('✅ Thank you for your review!');
-    })
-    .catch(error => {
-        console.error('Error submitting review:', error);
-        showToast('❌ Something went wrong!');
-    });
-});
+    try {
+      await addDoc(collection(db, "reviews"), review);
+      form.reset();
+      loadReviews();
+      showToast('✅ Thank you for your review!');
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      showToast('❌ Failed to submit!');
+    }
+  });
 
-function thumb(id, action) {
-    fetch(`http://localhost:3000/reviews/${id}/thumbs`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action })
-    })
-    .then(res => res.json())
-    .then(() => loadReviews());
-}
+  // Make thumb function global
+  window.thumb = async function(id, action) {
+    const reviewRef = doc(db, "reviews", id);
+    try {
+      await updateDoc(reviewRef, {
+        [action === 'up' ? 'thumbs_up' : 'thumbs_down']: increment(1)
+      });
+      loadReviews();
+    } catch (error) {
+      console.error("Error updating thumbs:", error);
+    }
+  };
 
-function showToast(message) {
+  window.showToast = function(message) {
     const toast = document.getElementById('toast');
     toast.textContent = message;
     toast.className = "toast show";
     setTimeout(() => {
-        toast.className = toast.className.replace("show", "");
-    }, 3000); // Hide after 3 seconds
-}
+      toast.className = toast.className.replace("show", "");
+    }, 3000);
+  }
 
-// Initial load
-loadReviews();
-
+  // Load on init
+  loadReviews();
